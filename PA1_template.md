@@ -7,9 +7,44 @@ output:
 
 ## Loading and preprocessing the data
 
-```{r echo=TRUE}
+
+```r
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(lubridate)
+```
+
+```
+## 
+## Attaching package: 'lubridate'
+```
+
+```
+## The following object is masked from 'package:base':
+## 
+##     date
+```
+
+```r
 setwd(dir = '~/R Projects/Reproducible Research/Course Project 1/')
 Raw.Data <- read.csv(file = 'activity.csv', header = TRUE)
 
@@ -21,38 +56,75 @@ Tidy.Data <-    Raw.Data %>%
 
 ## What is mean total number of steps taken per day?
 
-```{r echo=TRUE}
+
+```r
 ## Calculating the total number of steps taken per day
 Daily.Total <-  Tidy.Data %>% 
                 group_by(date) %>% 
                 summarise('daily total' = sum(steps))
 
 hist(Daily.Total$`daily total`)
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
 mean(Daily.Total$`daily total`, na.rm = TRUE)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(Daily.Total$`daily total`, na.rm = TRUE)
+```
+
+```
+## [1] 10765
 ```
 
 
 ## What is the average daily activity pattern?
 
-```{r echo=TRUE}
+
+```r
 ## Calculating the average number of steps taken, averaged across all days.
 Average.Daily <-        Tidy.Data %>% 
                         group_by(interval) %>%
                         summarise('average across all days' = mean(steps, na.rm = TRUE))
 
 plot(Average.Daily, type = "l")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+```r
 ## Finding the 5-minute interval which , on average, contains the maximum number of steps
 Average.Daily %>% filter(`average across all days` == max(`average across all days`))
 ```
 
+```
+## # A tibble: 1 x 2
+##   interval `average across all days`
+##      <int>                     <dbl>
+## 1      835                      206.
+```
+
 
 ## Imputing missing values
-```{r echo=TRUE}
+
+```r
 ## Calculating the total number of missing values in the dataset
 Good <- complete.cases(Tidy.Data)
 nrow(Tidy.Data[!Good,])
+```
+
+```
+## [1] 2304
+```
+
+```r
 ## Devising a strategy for filling in all of the missing values in the dataset
 Five.Min.Average <- mean(Tidy.Data$steps, na.rm = TRUE)
 
@@ -65,7 +137,13 @@ for (i in seq_len(nrow(Tidy.Data))) {
         }
         
 }
+```
 
+```
+## Warning: Unknown or uninitialised column: 'steps2'.
+```
+
+```r
 ## Creating a new dataset that is equal to the original dataset but with the missing data filled in
 Tidy.Data.NA.Filled <- Tidy.Data[,c(5,2,3,4)]
 ## Calculating the total number of steps taken per day
@@ -74,17 +152,32 @@ Daily.Total.2 <-        Tidy.Data.NA.Filled %>%
                         summarise('daily total' = sum(steps2))
 
 hist(Daily.Total.2$`daily total`)
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+```r
 mean(Daily.Total.2$`daily total`, na.rm = TRUE)
-median(Daily.Total.2$`daily total`, na.rm = TRUE)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
+median(Daily.Total.2$`daily total`, na.rm = TRUE)
+```
+
+```
+## [1] 10766.19
 ```
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r echo=TRUE}
+
+```r
 ## Define a function to determine whether a given date is a weekday or weekend day.
 library(timeDate)
 f <- function(x) {
@@ -110,5 +203,6 @@ Average.weekends <-     Tidy.Data.NA.Filled.2 %>%
 par(mfcol = c(2,1))
 plot(Average.weekends, type = "l", main = "weekends")
 plot(Average.weekdays, type = "l", main = "weekdays")
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
