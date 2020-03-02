@@ -2,7 +2,7 @@
 title: "Reproducible Research: Peer Assessment 1"
 output: 
   html_document:
-    keep_md: true
+    keep_md: yes
 ---
 
 ## Loading and preprocessing the data
@@ -32,7 +32,7 @@ hist(Daily.Total$`daily total`)
 mean(Daily.Total$`daily total`, na.rm = TRUE)
 median(Daily.Total$`daily total`, na.rm = TRUE)
 ```
-
+the mean and median of the total number of steps taken per day are presented above.
 
 ## What is the average daily activity pattern?
 
@@ -46,16 +46,17 @@ plot(Average.Daily, type = "l")
 ## Finding the 5-minute interval which , on average, contains the maximum number of steps
 Average.Daily %>% filter(`average across all days` == max(`average across all days`))
 ```
-
+This 5-minute interval contains the maximum number of steps.
 
 ## Imputing missing values
+
 ```{r echo=TRUE}
 ## Calculating the total number of missing values in the dataset
 Good <- complete.cases(Tidy.Data)
 nrow(Tidy.Data[!Good,])
 ## Devising a strategy for filling in all of the missing values in the dataset
 Five.Min.Average <- mean(Tidy.Data$steps, na.rm = TRUE)
-
+## The mean value of the respective 5-min interval will be used to replace missing values.
 for (i in seq_len(nrow(Tidy.Data))) {
         if (is.na(Tidy.Data$steps[i])) {
                 Tidy.Data$steps2[i] <- Five.Min.Average
